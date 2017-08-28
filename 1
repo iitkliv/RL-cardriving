@@ -1,0 +1,21 @@
+Using TensorFlow backend.
+2017-08-15 14:39:42.341432: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-15 14:39:42.341472: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-15 14:39:42.341496: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-15 14:39:42.341507: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-15 14:39:42.341518: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+Traceback (most recent call last):
+  File "ddpg.py", line 162, in <module>
+    playGame()
+  File "ddpg.py", line 76, in playGame
+    ob = env.reset(relaunch=True)   #relaunch TORCS every 3 episode because of the memory leak error
+  File "/home/user/gym_torcs/gym_torcs.py", line 185, in reset
+    self.client = snakeoil3.Client(p=3101, vision=self.vision)  # Open new UDP in vtorcs
+  File "/home/user/gym_torcs/snakeoil3_gym.py", line 143, in __init__
+    self.setup_connection()
+  File "/home/user/gym_torcs/snakeoil3_gym.py", line 170, in setup_connection
+    sockdata,addr= self.so.recvfrom(data_size)
+KeyboardInterrupt
+close failed in file object destructor:
+sys.excepthook is missing
+lost sys.stderr
