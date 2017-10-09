@@ -1,4 +1,5 @@
 from gym_torcs import TorcsEnv
+from os import system
 import numpy as np
 import random
 import argparse
@@ -8,6 +9,7 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.optimizers import Adam
 import tensorflow as tf
 from keras.engine.training import collect_trainable_weights
+import pyscreenshot as ImageGrab
 import json
 
 from ReplayBuffer import ReplayBuffer
@@ -17,8 +19,14 @@ from OU import OU
 import timeit
 
 OU = OU()       #Ornstein-Uhlenbeck Process
-
 def playGame(train_indicator=1):    #1 means Train, 0 means simply Run
+    images = []
+    images_i = 0
+    images_g = 0
+    images_save = 0
+    images_size = 20
+    record = 0
+    record_time = 1
     BUFFER_SIZE = 100000
     BATCH_SIZE = 32
     GAMMA = 0.99
@@ -105,7 +113,28 @@ def playGame(train_indicator=1):    #1 means Train, 0 means simply Run
             s_t1 = np.hstack((ob.angle, ob.track, ob.trackPos, ob.speedX, ob.speedY, ob.speedZ, ob.wheelSpinVel/100.0, ob.rpm))
 #            print ob.trackPos       
             buff.add(s_t, a_t[0], r_t, s_t1, done)      #Add replay buffer
-            
+            if record == 1:
+                if images_i == images_size:
+                    if record_time == 1:
+                        start_time = timeit.default_timer()
+                    for im in images:
+                        im.save('data/out_' + str(images_save) + '.jpg', 'JPEG')
+                        images_save+=1
+                    images = []
+                    images_i = 0
+                    if record_time == 1:
+                        print "saving: " + str(timeit.default_timer() - start_time)
+                else:
+                    if record_time == 1:
+                        start_time = timeit.default_timer()
+                    images_i += 1
+                    images_g += 1
+                    images.append(ImageGrab.grab(bbox=(66,51,710,535)))
+                    if record_time == 1:
+                        print "grabbing: " + str(timeit.default_timer() - start_time)
+            else:
+                system('scrot -u data/screenshot'+str(images_g)+'.jpg')
+                images_g += 1
             #Do the batch update
             batch = buff.getBatch(BATCH_SIZE)
             states = np.asarray([e[0] for e in batch])
