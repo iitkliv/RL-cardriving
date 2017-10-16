@@ -819,7 +819,7 @@ reCapture(void)
     glReadBuffer(GL_FRONT);
     glReadPixels((sw-vw)/2, (sh-vh)/2, vw, vh, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid*)img);
 
-    sprintf(buf, "%s/torcs-%4.4d-%8.8d.png", capture->outputBase, capture->currentCapture, capture->currentFrame++);
+    sprintf(buf, "/mnt/X/temp/torcs-%4.4d-%8.8d.png", capture->outputBase, capture->currentCapture, capture->currentFrame++);
     GfImgWritePng(img, buf, vw, vh);
     free(img);
 }
@@ -830,6 +830,7 @@ ReUpdate(void)
 {
     double 		t;
     tRmMovieCapture	*capture;
+//    ReInfo->_displayMode = RM_DISP_MODE_CAPTURE;
     if (getTextOnly()==false)
     {
   		START_PROFILE("ReUpdate");
