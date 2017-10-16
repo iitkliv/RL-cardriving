@@ -226,18 +226,40 @@ class TorcsEnv:
 
         return torcs_action
 
+    # def obs_vision_to_image_rgb(self, obs_image_vec):
+    #     image_vec =  obs_image_vec
+    #     rgb = []
+    #     temp = []
+    #     # convert size 64x64x3 = 12288 to 64x64=4096 2-D list 
+    #     # with rgb values grouped together.
+    #     # Format similar to the observation in openai gym
+    #     for i in range(0,12286,3):
+    #         temp.append(image_vec[i])
+    #         temp.append(image_vec[i+1])
+    #         temp.append(image_vec[i+2])
+    #         rgb.append(temp)
+    #         temp = []
+    #     return np.array(rgb, dtype=np.uint8)
 
     def obs_vision_to_image_rgb(self, obs_image_vec):
-        image_vec =  obs_image_vec
-        r = image_vec[0:len(image_vec):3]
-        g = image_vec[1:len(image_vec):3]
-        b = image_vec[2:len(image_vec):3]
+       image_vec =  obs_image_vec
+       # print 'printing -------------'
+       # print image_vec
+       r = image_vec[0:len(image_vec):3]
+       g = image_vec[1:len(image_vec):3]
+       b = image_vec[2:len(image_vec):3]
+       np.set_printoptions(threshold='nan')
 
-        sz = (64, 64)
-        r = np.array(r).reshape(sz)
-        g = np.array(g).reshape(sz)
-        b = np.array(b).reshape(sz)
-        return np.array([r, g, b], dtype=np.uint8)
+       sz = (64, 64)
+       r = np.array(r).reshape(sz)
+       g = np.array(g).reshape(sz)
+       b = np.array(b).reshape(sz)
+       from scipy import misc
+       misc.imsave('a.png', [r,g,b])
+       # print r
+       # exit(0)
+       return np.array([r, g, b], dtype=np.uint8)
+
 
     def make_observaton(self, raw_obs):
         if self.vision is False:
@@ -272,15 +294,29 @@ class TorcsEnv:
             Observation = col.namedtuple('Observaion', names)
 
             # Get RGB from observation
-            image_rgb = self.obs_vision_to_image_rgb(raw_obs[names[8]])
-
+            # print '---------o----------'
+            # print raw_obs
+            image_rgb = self.obs_vision_to_image_rgb(raw_obs['img'])
             return Observation(focus=np.array(raw_obs['focus'], dtype=np.float32)/200.,
-                               speedX=np.array(raw_obs['speedX'], dtype=np.float32)/self.default_speed,
-                               speedY=np.array(raw_obs['speedY'], dtype=np.float32)/self.default_speed,
-                               speedZ=np.array(raw_obs['speedZ'], dtype=np.float32)/self.default_speed,
+                               speedX=np.array(raw_obs['speedX'], dtype=np.float32)/300.0,
+                               speedY=np.array(raw_obs['speedY'], dtype=np.float32)/300.0,
+                               speedZ=np.array(raw_obs['speedZ'], dtype=np.float32)/300.0,
+                               angle=np.array(raw_obs['angle'], dtype=np.float32)/3.1416,
+                               # damage=np.array(raw_obs['damage'], dtype=np.float32),
                                opponents=np.array(raw_obs['opponents'], dtype=np.float32)/200.,
-                               rpm=np.array(raw_obs['rpm'], dtype=np.float32),
+                               rpm=np.array(raw_obs['rpm'], dtype=np.float32)/10000,
                                track=np.array(raw_obs['track'], dtype=np.float32)/200.,
                                trackPos=np.array(raw_obs['trackPos'], dtype=np.float32)/1.,
                                wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32),
                                img=image_rgb)
+
+            # return Observation(focus=np.array(raw_obs['focus'], dtype=np.float32)/200.,
+            #                    speedX=np.array(raw_obs['speedX'], dtype=np.float32)/300,
+            #                    speedY=np.array(raw_obs['speedY'], dtype=np.float32)/300,
+            #                    speedZ=np.array(raw_obs['speedZ'], dtype=np.float32)/300,
+            #                    opponents=np.array(raw_obs['opponents'], dtype=np.float32)/200.,
+            #                    rpm=np.array(raw_obs['rpm'], dtype=np.float32),
+            #                    track=np.array(raw_obs['track'], dtype=np.float32)/200.,
+            #                    trackPos=np.array(raw_obs['trackPos'], dtype=np.float32)/1.,
+            #                    wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32),
+            #                    img=image_rgb)

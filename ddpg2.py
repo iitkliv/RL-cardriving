@@ -11,6 +11,8 @@ import tensorflow as tf
 from keras.engine.training import collect_trainable_weights
 import pyscreenshot as ImageGrab
 import json
+from PIL import Image
+
 
 from ReplayBuffer import ReplayBuffer
 from ActorNetwork import ActorNetwork
@@ -39,7 +41,7 @@ def playGame(train_indicator=1):    #1 means Train, 0 means simply Run
 
     np.random.seed(1337)
 
-    vision = False
+    vision = True
 
     EXPLORE = 100000.
     episode_count = 2000
@@ -84,6 +86,13 @@ def playGame(train_indicator=1):    #1 means Train, 0 means simply Run
             ob = env.reset(relaunch=True)   #relaunch TORCS every 3 episode because of the memory leak error
         else:
             ob = env.reset()
+
+        # if vision == True:
+        #     img = Image.fromarray(ob.img, 'RGB')
+        #     print ob.img
+        #     img.show()
+        #     img.save('my.png')
+        #     vision = False
 
         s_t = np.hstack((ob.angle, ob.track, ob.trackPos, ob.speedX, ob.speedY,  ob.speedZ, ob.wheelSpinVel/100.0, ob.rpm))
      
